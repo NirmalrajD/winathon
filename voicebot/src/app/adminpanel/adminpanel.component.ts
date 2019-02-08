@@ -17,6 +17,7 @@ export class AdminpanelComponent implements OnInit {
   Enquirydetails:any;
   status: any;
   chart:any;
+  chartData:any;
   openticket:any;
   pendingticket:any;
   closedticket:any;
@@ -63,7 +64,8 @@ export class AdminpanelComponent implements OnInit {
   ticketschart(){
     this.chart = new Chart({
       chart: {
-        type: 'pie'
+        
+      type: 'pie'
       },
       title: {
         text: 'Tickets Details'
@@ -79,6 +81,32 @@ export class AdminpanelComponent implements OnInit {
             { name: 'Open tickets', y: 61.41 },
             { name: 'Submit Tickets', y: 11.84 },
             { name: 'Resolved Tickets', y: 50.85 }
+           
+        ]
+         
+        }
+      ]
+    });
+   
+    /**chartData */
+    this.chartData = new Chart({
+      chart: {
+        type: 'pie'
+      },
+      title: {
+        text: 'Tickets Details'
+      },
+      credits: {
+        enabled: false
+      },
+      colors:['#b54b53','#d0d0d0','#ecac4c'],
+      series: [
+        {
+          name: 'Line 1',
+          data: [
+            { name: 'Open tickets', y: 36},
+            { name: 'Submit Tickets', y:47 },
+            { name: 'Resolved Tickets', y: 50 }
            
         ]
          
