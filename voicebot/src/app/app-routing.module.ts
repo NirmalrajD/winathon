@@ -4,7 +4,7 @@ import { AdminpanelComponent } from './adminpanel/adminpanel.component';
 
 const routes: Routes = [{ path: 'Admin', component: AdminpanelComponent },
 { path: '',
-    redirectTo: '/Admin',
+    redirectTo: '/',
     pathMatch: 'full'
   }];
 
