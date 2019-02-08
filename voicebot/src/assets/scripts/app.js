@@ -78,7 +78,7 @@ function getCustomerTopQuestion(text) {
   }
 }
 
-function getEnquiredDetails() {
+function getEnquiredDetails(searchQuery) {
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
@@ -90,29 +90,57 @@ function getEnquiredDetails() {
       console.log("FAILED");
     }
   };
-  xhttp.open("POST", "http://192.168.27.58/api/GetEnquiryByCustomer?input=9003567895", true);
+  xhttp.open("POST", `http://192.168.27.58/api/GetEnquiryByCustomer?input=${searchQuery.replace(/ /g, "")}`, true);
   xhttp.setRequestHeader("Content-type", "application/json");
   xhttp.send();
 }
 
+function submitConnectionDetails(formData) {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      console.log(this.responseText)
+       var jsonObj = JSON.parse(this.responseText)
+       console.log(jsonObj)
+       //updateEnquiryDetails(jsonObj)
+    } else {
+      console.log("FAILED");
+    }
+  };
+
+  var postModel = {
+    "CustomerName" : formData["NAME"],
+    "Location" : formData["LOCATION"],
+    "Zipcode" : formData["ZIPCODE"],
+    "EmailId" : formData["EMAILID"].replace(/ /g, ""),
+    "ContactNo" : formData["CONTACTNUMBER"].replace(/ /g, ""),
+    "SecondaryNo" : formData["ALTNUMBER"],
+    "CallType" : formData["CALLTYPE"]
+  }
+
+  var jsonStr = JSON.stringify(postModel);
+  console.log(jsonStr);
+  xhttp.open("POST", `http://192.168.27.58/api/InsertCustomer`, true);
+  xhttp.setRequestHeader("Content-type", "application/json");
+  xhttp.send(jsonStr);
+}
+
+
 function updateEnquiryDetails(jsonObj) {
+    var textMsg = "Invalid search!!! Please try again...";
     if (jsonObj["status"] == 1) {
       console.log(jsonObj["data"])
       var enquiryDetails = jsonObj["data"]
       if (enquiryDetails.length == 1) {
-        var textMsg = `Your latest enquiry id is ${enquiryDetails[0]['EnquiryNo']}. Currently status is ${enquiryDetails[0]['Status']}`
-        addBotItem(textMsg)
-        var msg = new SpeechSynthesisUtterance(textMsg);
-        msg.addEventListener("end", function(ev) {
-          startListening();
-        });
-        msg.addEventListener("error", function(ev) {
-          startListening();
-        });
-        window.speechSynthesis.speak(msg);
+        textMsg = `Your latest enquiry id is ${enquiryDetails[0]['EnquiryNo']}. Currently status is ${enquiryDetails[0]['Status']}`
       }
     }
+  
+    addBotItem(textMsg)
+    var msg = new SpeechSynthesisUtterance(textMsg);
+    window.speechSynthesis.speak(msg);
 }
+
 
 document.addEventListener("DOMContentLoaded", function(event) {
 
@@ -147,7 +175,26 @@ document.addEventListener("DOMContentLoaded", function(event) {
   var selectedType = 0;
   var currentStepID = 0;
   var existingConnecttion = ["GETID"];
-  var newConnection = ["NAME", "LOCATION CODE", "EMAIL ID", "CONTACT NUMEBR", "ALTERNATE NUMBER"];
+  var newConnection = ["NAME", "LOCATION", "ZIPCODE", "EMAILID", "CONTACTNUMBER", "ALTNUMBER", "CALLTYPE"];
+  var newData = {
+    "NAME" : "",
+    "LOCATION" : "",
+    "ZIPCODE" : "",
+    "EMAILID" : "",
+    "CONTACTNUMBER" : "",
+    "ALTNUMBER" : "",
+    "CALLTYPE" : ""
+  }
+
+  var newMessages = {
+    "NAME" : "Please tell your name?",
+    "LOCATION" : "Please share your location?",
+    "ZIPCODE" : "Please share your Zipcode?",
+    "EMAILID" : "Please share your Email ID?",
+    "CONTACTNUMBER" : "Please tell your contact number?",
+    "ALTNUMBER" : "Please share your alternate number?",
+    "CALLTYPE" : "Like to know about New connection or general enquiry?"
+  }
 
   // Initial feedback message.
   var initialMessage = "Hi! Let me know type of enquiry its new or existing?";
@@ -177,52 +224,31 @@ document.addEventListener("DOMContentLoaded", function(event) {
       var textMsg = "";
       if (selectedType == 1) {
         //textMsg = "Please wait while checking...";
-        getEnquiredDetails();
+        getEnquiredDetails(recognizedText);
         return false
       } else if(selectedType == 2) {
+        newData[newConnection[currentStepID]] = recognizedText
+        console.log(newData);
         currentStepID++;
         if (currentStepID < newConnection.length) {
-          textMsg = newConnection[currentStepID];
+          console.log(currentStepID)
+          console.log(newConnection[currentStepID]);
+          textMsg = newMessages[newConnection[currentStepID]];
         } else {
-          textMsg = "API will be called to submit the details";
+          textMsg = "API will be called to submit the details"; 
+          submitConnectionDetails(newData);
         }
       } else {
         currentStepID = 0
         textMsg = "No details available. Please re-try another from starting...";
       }
-      // Set a timer just in case. so if there was an error speaking or whatever, there will at least be a prompt to continue
-      var timer = window.setTimeout(function() { startListening(); }, 5000);
-      addBotItem(textMsg)
-      var msg = new SpeechSynthesisUtterance(textMsg);
-      msg.addEventListener("end", function(ev) {
-        window.clearTimeout(timer);
-        startListening();
-      });
-      msg.addEventListener("error", function(ev) {
-        window.clearTimeout(timer);
-        startListening();
-      });
-      window.speechSynthesis.speak(msg);
+      
+      generateMsgWithListener(textMsg, true)
     }
 
     function handleTopMessages(text) {
-      // Set a timer just in case. so if there was an error speaking or whatever, there will at least be a prompt to continue
-      var timer = window.setTimeout(function() { startListening(); }, 5000);
-
       var textMsg = getCustomerTopQuestion(text);
-      var msg = new SpeechSynthesisUtterance(textMsg);
-      addBotItem(textMsg);
-      ga('send', 'event', 'Message', 'add', 'bot');
-      msg.addEventListener("end", function(ev) {
-        window.clearTimeout(timer);
-        startListening();
-      });
-      msg.addEventListener("error", function(ev) {
-        window.clearTimeout(timer);
-        startListening();
-      });
-
-      window.speechSynthesis.speak(msg);
+      generateMsgWithListener(textMsg, true)
     }
 
     /*let promise = apiClient.textRequest(recognizedText);
@@ -262,6 +288,26 @@ document.addEventListener("DOMContentLoaded", function(event) {
   recognition.onend = function() {
     gotoReadyState();
   };
+
+  function generateMsgWithListener(textMsg, withListener = false) {
+    // Set a timer just in case. so if there was an error speaking or whatever, there will at least be a prompt to continue
+    var timer = window.setTimeout(function() { startListening(); }, 3000);
+    if (withListener == true) {
+      window.clearTimeout(timer);
+    }
+    addBotItem(textMsg)
+    var msg = new SpeechSynthesisUtterance(textMsg);
+    msg.addEventListener("end", function(ev) {
+      window.clearTimeout(timer);
+      startListening();
+    });
+    msg.addEventListener("error", function(ev) {
+      window.clearTimeout(timer);
+      startListening();
+    });
+    window.speechSynthesis.speak(msg);
+  }
+  
 
   function startListening() {
     gotoListeningState();
