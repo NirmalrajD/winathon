@@ -4,7 +4,11 @@ import { AdminpanelComponent } from './adminpanel/adminpanel.component';
 
 const routes: Routes = [{ path: 'Admin', component: AdminpanelComponent },
 { path: '',
+<<<<<<< Updated upstream
     redirectTo: '/',
+=======
+    redirectTo: '/Admin',
+>>>>>>> Stashed changes
     pathMatch: 'full'
   }];
 
