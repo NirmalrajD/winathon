@@ -237,6 +237,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
         } else {
           textMsg = "API will be called to submit the details"; 
           submitConnectionDetails(newData);
+          return false
         }
       } else {
         currentStepID = 0
