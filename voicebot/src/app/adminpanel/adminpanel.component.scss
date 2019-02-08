@@ -22,6 +22,19 @@ table {
 -moz-box-shadow: 0px 2px 10px 1px rgba(0,0,0,0.5);
 box-shadow: 0px 2px 10px 1px rgba(0,0,0,0.5);
   }
+  .chart-container{
+    padding:28px;
+  }
+  .chart-container > div{
+    width: 100%;max-width:600px;
+  background:#fff;padding:28px 0px;
+  margin:0px auto;
+  margin-bottom:28px;
+   border:1px solid #d0d0d0;
+ -webkit-box-shadow: 0px 2px 10px 1px rgba(0,0,0,0.5);
+-moz-box-shadow: 0px 2px 10px 1px rgba(0,0,0,0.5);
+box-shadow: 0px 2px 10px 1px rgba(0,0,0,0.5);
+  }
 table .table-thead th{
 background:#666;
 font-weight:400;
@@ -34,4 +47,7 @@ table tbody td{
   padding:8px 14px;
   color:#75787b;
   border-bottom:1px solid #d0d0d0;
+}
+.mat-tab-header{
+padding:0px 28px;
 }

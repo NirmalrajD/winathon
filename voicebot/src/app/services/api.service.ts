@@ -7,6 +7,7 @@ import { HttpService } from '../core/http-service.service';
 export class ApiService {
   
   API_URL  = 'http://192.168.27.58/api/GetCustomers';
+  API_URL_Enquiries  = 'http://192.168.27.58/api/GetEnquires/';
 
   constructor(private  httpClient:  HttpService) { }
 
@@ -14,4 +15,9 @@ export class ApiService {
     return  this.httpClient.get(this.API_URL);
   }
 
+    getEnquiryDetails(){
+    return  this.httpClient.get(this.API_URL_Enquiries);
+  }
+
 }
+

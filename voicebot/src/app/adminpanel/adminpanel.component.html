@@ -6,6 +6,13 @@
   <mat-tab label="Admin Dashboard">
     <div class="material-table">
     
+        
+
+<mat-form-field style="width:300px">
+  <input matInput placeholder="Search" name="searchString"  [(ngModel)]="searchString">
+</mat-form-field>
+
+   
   <table class="w100" border="0" cellpadding="0" cellspacing="0">
     <thead class="table-thead"><tr>
       <th>Customer No</th>
@@ -16,7 +23,7 @@
 <th>Secondary No</th>
       </tr></thead>
     <tbody >
-       <tr *ngFor="let tblvalue of details;">
+       <tr *ngFor="let tblvalue of details | filter : 'CustomerName' : searchString; ">
       <td> {{tblvalue.CustomerName}} </td>
 <td> {{tblvalue.Location}} </td>
  <td> {{tblvalue.Zipcode}} </td>
@@ -27,12 +34,14 @@
     </tbody>
 
   </table>
-<div class="chart-container">
-  <div><nvd3 [options]="options" [data]="datatval"></nvd3></div>
-</div>
+
 </div>
      </mat-tab>
-  <mat-tab label="Customer Enquiry"> Content 2 </mat-tab>
+  <mat-tab label="Customer Enquiry">
+      <div class="chart-container">
+          <div><div [chart]="chart"></div></div>
+        </div>  
+  </mat-tab>
   <mat-tab label="Complaints History"> Content 3 </mat-tab>
 </mat-tab-group>
 
