@@ -80,6 +80,21 @@ function getCustomerTopQuestion(text) {
   return "Invalid option!!! Please share existiing query or new query?";
 }
 
+function sendEmail(jsonObj) {
+  if (jsonObj["status"] == 1) {
+    var postModel = {
+      "UserName" : jsonObj["data"]["Customer"]["CustomerName"],
+      "EmailId" : jsonObj["data"]["Customer"]["EmailId"],
+      "EnquiryNo" : jsonObj["data"]["Enquiry"]["EnquiryNo"]
+    }
+    var jsonStr = JSON.stringify(postModel);
+    var xhttp = new XMLHttpRequest();
+    xhttp.open("POST", `http://192.168.27.58/api/SendEmailNotification`, true);
+    xhttp.setRequestHeader("Content-type", "application/json");
+    xhttp.send(jsonStr);
+  }
+}
+
 function getEnquiredDetails(searchQuery) {
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
@@ -132,11 +147,12 @@ function updateNewConnectionDetails(jsonObj) {
   if (jsonObj["status"] == 1) {
     console.log(jsonObj["data"])
     var enquiryDetails = jsonObj["data"]
-    textMsg = `Your enquiry has been successfully registered with reference number ${enquiryDetails['Enquiry']['EnquiryNo']}. Please use this number for future reference with respect to this issue,`;
+    textMsg = `Your enquiry has been successfully registered with reference number ${enquiryDetails['Enquiry']['EnquiryNo']}. Please use this number for future reference with respect to this issue.`;
   }
   addBotItem(textMsg)
   var msg = new SpeechSynthesisUtterance(textMsg);
   window.speechSynthesis.speak(msg);
+  sendEmail(jsonObj)
 }
 
 function updateEnquiryDetails(jsonObj) {
