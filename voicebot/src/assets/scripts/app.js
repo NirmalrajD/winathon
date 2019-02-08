@@ -223,7 +223,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
     recognizedText = ev["results"][0][0]["transcript"];
     console.log(recognizedText)
     addUserItem(recognizedText);
-    ga('send', 'event', 'Message', 'add', 'user');
+    //ga('send', 'event', 'Message', 'add', 'user');
 
     if (customerTypeKnown == false) {
       selectedType = getCustomerType(recognizedText)
@@ -234,7 +234,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
     } else {
       var textMsg = "";
       if (selectedType == 1) {
-        //textMsg = "Please wait while checking...";
         getEnquiredDetails(recognizedText);
         return false
       } else if(selectedType == 2) {
@@ -259,36 +258,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
       var textMsg = getCustomerTopQuestion(text);
       generateMsgWithListener(textMsg, true)
     }
-
-    /*let promise = apiClient.textRequest(recognizedText);
-
-    promise
-        .then(handleResponse)
-        .catch(handleError);
-
-    function handleResponse(serverResponse) {
-
-      // Set a timer just in case. so if there was an error speaking or whatever, there will at least be a prompt to continue
-      var timer = window.setTimeout(function() { startListening(); }, 5000);
-
-      const speech =  "Please share your customer id or primary contact number?"//serverResponse["result"]["fulfillment"]["speech"];
-      var msg = new SpeechSynthesisUtterance(speech);
-      addBotItem(speech);
-      ga('send', 'event', 'Message', 'add', 'bot');
-      msg.addEventListener("end", function(ev) {
-        window.clearTimeout(timer);
-        startListening();
-      });
-      msg.addEventListener("error", function(ev) {
-        window.clearTimeout(timer);
-        startListening();
-      });
-
-      window.speechSynthesis.speak(msg);
-    }
-    function handleError(serverError) {
-      console.log("Error from api.ai server: ", serverError);
-    } */
   };
 
   recognition.onerror = function(ev) {
@@ -325,7 +294,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
   const startButton = document.querySelector("#start");
   startButton.addEventListener("click", function(ev) {
-    ga('send', 'event', 'Button', 'click');
+    //ga('send', 'event', 'Button', 'click');
     startListening();
     ev.preventDefault();
   });
