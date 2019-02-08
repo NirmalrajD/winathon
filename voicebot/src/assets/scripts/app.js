@@ -248,7 +248,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
   };
   recognition.onresult = function(ev) {
     recognizedText = ev["results"][0][0]["transcript"];
-    addUserItem(recognizedText.replace(/ /g, ""));
+    addUserItem(recognizedText);
     //ga('send', 'event', 'Message', 'add', 'user');
 
     if (customerTypeKnown == false) {
