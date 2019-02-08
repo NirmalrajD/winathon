@@ -78,13 +78,48 @@ function getCustomerTopQuestion(text) {
   }
 }
 
+function getEnquiredDetails() {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      console.log(this.responseText)
+       var jsonObj = JSON.parse(this.responseText)
+       console.log(jsonObj)
+       updateEnquiryDetails(jsonObj)
+    } else {
+      console.log("FAILED");
+    }
+  };
+  xhttp.open("POST", "http://192.168.27.58/api/GetEnquiryByCustomer?input=9003567895", true);
+  xhttp.setRequestHeader("Content-type", "application/json");
+  xhttp.send();
+}
+
+function updateEnquiryDetails(jsonObj) {
+    if (jsonObj["status"] == 1) {
+      console.log(jsonObj["data"])
+      var enquiryDetails = jsonObj["data"]
+      if (enquiryDetails.length == 1) {
+        var textMsg = `Your latest enquiry id is ${enquiryDetails[0]['EnquiryNo']}. Currently status is ${enquiryDetails[0]['Status']}`
+        addBotItem(textMsg)
+        var msg = new SpeechSynthesisUtterance(textMsg);
+        msg.addEventListener("end", function(ev) {
+          startListening();
+        });
+        msg.addEventListener("error", function(ev) {
+          startListening();
+        });
+        window.speechSynthesis.speak(msg);
+      }
+    }
+}
+
 document.addEventListener("DOMContentLoaded", function(event) {
 
   // test for relevant API-s
   // for (let api of ['speechSynthesis', 'webkitSpeechSynthesis', 'speechRecognition', 'webkitSpeechRecognition']) {
   //   console.log('api ' + api + " and if browser has it: " + (api in window));
   // }
-
   displayCurrentTime();
 
   // check for Chrome
@@ -115,7 +150,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
   var newConnection = ["NAME", "LOCATION CODE", "EMAIL ID", "CONTACT NUMEBR", "ALTERNATE NUMBER"];
 
   // Initial feedback message.
-  addBotItem("Hi! Let me know type of enquiry its new or existing?");
+  var initialMessage = "Hi! Let me know type of enquiry its new or existing?";
+  addBotItem(initialMessage);
 
   var recognition = new webkitSpeechRecognition();
   var recognizedText = null;
@@ -138,25 +174,35 @@ document.addEventListener("DOMContentLoaded", function(event) {
       handleTopMessages(recognizedText)
     } else {
       console.log("SECOND SETS")
+      var textMsg = "";
       if (selectedType == 1) {
-        var textMsg = "API will be called to get enquiry details";
-        var msg = new SpeechSynthesisUtterance(textMsg);
-        addBotItem(textMsg);
+        //textMsg = "Please wait while checking...";
+        getEnquiredDetails();
+        return false
       } else if(selectedType == 2) {
         currentStepID++;
-        var textMsg = "";
         if (currentStepID < newConnection.length) {
           textMsg = newConnection[currentStepID];
         } else {
           textMsg = "API will be called to submit the details";
         }
-        var msg = new SpeechSynthesisUtterance(textMsg);
-        addBotItem(textMsg);
       } else {
-        var textMsg = "No details available. Please try another options";
-        var msg = new SpeechSynthesisUtterance(textMsg);
-        addBotItem(textMsg);
+        currentStepID = 0
+        textMsg = "No details available. Please re-try another from starting...";
       }
+      // Set a timer just in case. so if there was an error speaking or whatever, there will at least be a prompt to continue
+      var timer = window.setTimeout(function() { startListening(); }, 5000);
+      addBotItem(textMsg)
+      var msg = new SpeechSynthesisUtterance(textMsg);
+      msg.addEventListener("end", function(ev) {
+        window.clearTimeout(timer);
+        startListening();
+      });
+      msg.addEventListener("error", function(ev) {
+        window.clearTimeout(timer);
+        startListening();
+      });
+      window.speechSynthesis.speak(msg);
     }
 
     function handleTopMessages(text) {
