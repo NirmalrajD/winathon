@@ -178,7 +178,10 @@ function updateEnquiryDetails(jsonObj) {
       var enquiryDetails = jsonObj["data"]
       if (enquiryDetails != null ) {
         if (enquiryDetails.length == 1) {
-          textMsg = `Hi ${jsonObj["msg"]}, Your latest enquiry id is ${enquiryDetails[0]['EnquiryNo']}. Currently status is ${enquiryDetails[0]['Status']}`
+          textMsg = `Hi ${jsonObj["msg"]}, Your latest enquiry id is ${enquiryDetails[0]['EnquiryNo']}. Currently status is ${enquiryDetails[0]['Status']}.`
+          if (enquiryDetails[0]['Description'] != null) {
+            textMsg += `<br/><br/> ${enquiryDetails[0]['Description']}`;
+          }
           if (enquiryDetails[0]['Status'] == "Closed") {
             textMsg += "<br/><br/>This ticket has been closed recently. Would you like to share the feedback?";
           }   
