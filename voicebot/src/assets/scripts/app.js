@@ -268,7 +268,10 @@ document.addEventListener("DOMContentLoaded", function(event) {
   }
 
   // Initial feedback message.
-  var initialMessage = "Hi! Let me know type of enquiry its new or existing?";
+  var welcomeMessage = "Hi Welcome! I am a SteelBot and I am here to help you";
+  addBotItem(welcomeMessage);
+
+  var initialMessage = "To begin the conversation, Please Let me know type of enquiry its new or existing one?";
   addBotItem(initialMessage);
 
   var recognition = new webkitSpeechRecognition();
