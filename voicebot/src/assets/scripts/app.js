@@ -80,6 +80,22 @@ function getCustomerTopQuestion(text) {
   return "Invalid option!!! Please share existing query or new query?";
 }
 
+function updateFeedback(jsonObj) {
+  if (jsonObj["status"] == 1) {
+    var postModel = {
+      "Rating" : 4,
+      "FeedBack" : "YES",
+      "EnquiryNo" : jsonObj["data"]["Enquiry"]["EnquiryNo"]
+    }
+    var jsonStr = JSON.stringify(postModel);
+    var xhttp = new XMLHttpRequest();
+    xhttp.open("PUT", `http://192.168.27.58/api/UpdateFeedback`, true);
+    xhttp.setRequestHeader("Content-type", "application/json");
+    xhttp.send(jsonStr);
+  }
+}
+
+
 function sendEmail(jsonObj) {
   if (jsonObj["status"] == 1) {
     var postModel = {
@@ -163,6 +179,9 @@ function updateEnquiryDetails(jsonObj) {
       if (enquiryDetails != null ) {
         if (enquiryDetails.length == 1) {
           textMsg = `Hi ${jsonObj["msg"]}, Your latest enquiry id is ${enquiryDetails[0]['EnquiryNo']}. Currently status is ${enquiryDetails[0]['Status']}`
+          if (enquiryDetails[0]['Status'] == "Closed") {
+            textMsg += "<br/><br/>This ticket has been closed recently. Would you like to share the feedback?";
+          }   
         } else if (enquiryDetails.length > 1) {
           textMsg = `Hi ${jsonObj["msg"]}, You have multiple enquiries are available. <br/>`;
           for (var element in enquiryDetails) {
