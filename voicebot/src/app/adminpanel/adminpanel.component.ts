@@ -1,5 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import {MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
+import { ApiService } from '../services/api.service';
+
 @Component({
   selector: 'app-adminpanel',
   templateUrl: './adminpanel.component.html',
@@ -8,12 +10,22 @@ import {MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
 export class AdminpanelComponent implements OnInit {
   displayedColumns: string[] = ['position', 'name', 'weight', 'symbol'];
   dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA);
-
+  details:  Array<object> = [];
   @ViewChild(MatPaginator) paginator: MatPaginator;
+
+  constructor(private  apiService:  ApiService) { }
 
   ngOnInit() {
     this.dataSource.paginator = this.paginator;
+    this.getUserDetails();
   }
+  public getUserDetails(){
+    this.apiService.getDetails().subscribe((data:  Array<object>) => {
+        this.details  =  data;
+        console.log(this.details);
+    });
+}
+
 }
 
 export interface PeriodicElement {
