@@ -56,6 +56,28 @@ function addError(text) {
   footer.style.display = "none";
 }
 
+function getCustomerType(text) {
+  if (text.includes("existing")) {
+    return 1
+  }
+
+  if (text.includes("new")) {
+    return 2
+  }
+
+  return 0
+}
+
+function getCustomerTopQuestion(text) {
+  if (text.includes("existing")) {
+    return "Share you number or customer id?"
+  }
+
+  if (text.includes("new")) {
+    return "Please share your name?"
+  }
+}
+
 document.addEventListener("DOMContentLoaded", function(event) {
 
   // test for relevant API-s
@@ -85,9 +107,15 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
   // api.ai client
   const apiClient = new ApiAi.ApiAiClient({accessToken: '329dcb8e2a8f4876acbf7fb616978686'});
+  var userTypes = ["NEWCONNECTTION", "EXISTING"];
+  var customerTypeKnown = false;
+  var selectedType = 0;
+  var currentStepID = 0;
+  var existingConnecttion = ["GETID"];
+  var newConnection = ["NAME", "LOCATION CODE", "EMAIL ID", "CONTACT NUMEBR", "ALTERNATE NUMBER"];
 
   // Initial feedback message.
-  addBotItem("Hi! I’m voicebot. Tap the microphone and start talking to me.");
+  addBotItem("Hi! Let me know type of enquiry its new or existing?");
 
   var recognition = new webkitSpeechRecognition();
   var recognizedText = null;
@@ -101,7 +129,57 @@ document.addEventListener("DOMContentLoaded", function(event) {
     addUserItem(recognizedText);
     ga('send', 'event', 'Message', 'add', 'user');
 
-    let promise = apiClient.textRequest(recognizedText);
+    if (customerTypeKnown == false) {
+      console.log("FIRST TIME")
+      selectedType = getCustomerType(recognizedText)
+      if (selectedType > 0) {
+        customerTypeKnown = true
+      }
+      handleTopMessages(recognizedText)
+    } else {
+      console.log("SECOND SETS")
+      if (selectedType == 1) {
+        var textMsg = "API will be called to get enquiry details";
+        var msg = new SpeechSynthesisUtterance(textMsg);
+        addBotItem(textMsg);
+      } else if(selectedType == 2) {
+        currentStepID++;
+        var textMsg = "";
+        if (currentStepID < newConnection.length) {
+          textMsg = newConnection[currentStepID];
+        } else {
+          textMsg = "API will be called to submit the details";
+        }
+        var msg = new SpeechSynthesisUtterance(textMsg);
+        addBotItem(textMsg);
+      } else {
+        var textMsg = "No details available. Please try another options";
+        var msg = new SpeechSynthesisUtterance(textMsg);
+        addBotItem(textMsg);
+      }
+    }
+
+    function handleTopMessages(text) {
+      // Set a timer just in case. so if there was an error speaking or whatever, there will at least be a prompt to continue
+      var timer = window.setTimeout(function() { startListening(); }, 5000);
+
+      var textMsg = getCustomerTopQuestion(text);
+      var msg = new SpeechSynthesisUtterance(textMsg);
+      addBotItem(textMsg);
+      ga('send', 'event', 'Message', 'add', 'bot');
+      msg.addEventListener("end", function(ev) {
+        window.clearTimeout(timer);
+        startListening();
+      });
+      msg.addEventListener("error", function(ev) {
+        window.clearTimeout(timer);
+        startListening();
+      });
+
+      window.speechSynthesis.speak(msg);
+    }
+
+    /*let promise = apiClient.textRequest(recognizedText);
 
     promise
         .then(handleResponse)
@@ -112,7 +190,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
       // Set a timer just in case. so if there was an error speaking or whatever, there will at least be a prompt to continue
       var timer = window.setTimeout(function() { startListening(); }, 5000);
 
-      const speech = serverResponse["result"]["fulfillment"]["speech"];
+      const speech =  "Please share your customer id or primary contact number?"//serverResponse["result"]["fulfillment"]["speech"];
       var msg = new SpeechSynthesisUtterance(speech);
       addBotItem(speech);
       ga('send', 'event', 'Message', 'add', 'bot');
@@ -129,7 +207,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
     }
     function handleError(serverError) {
       console.log("Error from api.ai server: ", serverError);
-    }
+    } */
   };
 
   recognition.onerror = function(ev) {
