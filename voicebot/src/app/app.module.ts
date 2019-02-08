@@ -7,10 +7,12 @@ import { AdminpanelComponent } from './adminpanel/adminpanel.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatButtonModule, MatCheckboxModule, MatPaginatorModule, MatTableModule } from '@angular/material';
 import { MatTabsModule } from '@angular/material/tabs';
+import { VoicebotComponent } from './voicebot/voicebot.component';
 
 @NgModule({
   declarations: [
     AppComponent,
+    VoicebotComponent,
     AdminpanelComponent
   ],
   imports: [
