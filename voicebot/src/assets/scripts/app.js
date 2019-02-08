@@ -76,6 +76,8 @@ function getCustomerTopQuestion(text) {
   if (text.includes("new")) {
     return "Please share your name?"
   }
+
+  return "Invalid option!!! Please share existiing query or new query?";
 }
 
 function getEnquiredDetails(searchQuery) {
