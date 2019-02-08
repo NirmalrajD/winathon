@@ -84,23 +84,77 @@ html {
 
 .item p {
   max-width: 256px;
+  position:relative;
   margin: 0;
   padding-top: 6px;
 }
 
 .item-container-bot .item {
   //background-image: url(../avatar_bot.svg);
-  padding-left: 40px;
+  padding-left: 55px;
   color: #3D4145;
 }
-
+.item{
+  position: relative;
+}
 .item-container-user .item {
   //background-image: url(../avatar_user.svg);
   background-position: right;
-  padding-right: 40px;
+  padding-right: 55px;
   color: #3498DB;
 }
-
+.item-container-bot .item p{
+  background:#ccc;
+  color:#222;
+  padding:8px;
+  border-radius:0px 3px 3px 0px;
+}
+.item:after,
+.item p:after{
+  position:absolute;
+  top:0px;
+  right:100%;
+  content:'';
+  display:block;
+  width: 0;
+height: 0;
+border-style: solid;
+border-width: 0 15px 10px 0;
+border-color: transparent #ccc transparent transparent;
+}
+.item-container-bot .item:after{
+ height: 40px;
+    width: 40px;
+    left: 0px;
+    top: 3px;
+    border-radius: 20px;
+    border: 0px;
+    background: #ccc url('assets/images/robot.png') center center no-repeat;
+    background-size: 25px;
+}
+.item-container-user .item:after{
+  height: 40px;
+    width: 40px;
+    left: auto;
+    right:0px;
+    top: 3px;
+    border-radius: 20px;
+    border: 0px;
+   background: #006699 url('assets/images/user.png') center center no-repeat;
+    background-size: 25px;
+}
+.item-container-user .item p{
+  background:#006699;
+  color:#FFF;
+  padding:8px;
+  border-radius:3px 0px 0px 3px;
+}
+.item-container-user .item p:after{
+  border-width: 10px 15px 0 0;
+  right:auto;
+  left:100%;
+border-color: #006699 transparent transparent transparent;
+}
 
 .app-footer {
   /*background-color: rgba(0, 255, 0, 0.3);*/

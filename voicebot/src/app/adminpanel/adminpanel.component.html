@@ -3,45 +3,37 @@
 </header>
 <section class="tabs-section">
 <mat-tab-group>
-  <mat-tab label="First">
+  <mat-tab label="Admin Dashboard">
     <div class="material-table">
-      <div class="mat-elevation-z8">
-  <table mat-table [dataSource]="dataSource">
+    
+  <table class="w100" border="0" cellpadding="0" cellspacing="0">
+    <thead class="table-thead"><tr>
+      <th>Customer No</th>
+<th>Locations</th>
+ <th>Zip code</th>
+<th>Contact No</th>
+ <th>Email Id</th>
+<th>Secondary No</th>
+      </tr></thead>
+    <tbody >
+       <tr *ngFor="let tblvalue of details;">
+      <td> {{tblvalue.CustomerName}} </td>
+<td> {{tblvalue.Location}} </td>
+ <td> {{tblvalue.Zipcode}} </td>
+<td> {{tblvalue.ContactNo}} </td>
+ <td> {{tblvalue.EmailId}} </td>
+<td> {{tblvalue.SecondaryNo}} </td>
+      </tr>
+    </tbody>
 
-    <!-- Position Column -->
-    <ng-container matColumnDef="position">
-      <th mat-header-cell *matHeaderCellDef> No. </th>
-      <td mat-cell *matCellDef="let element"> {{element.position}} </td>
-    </ng-container>
-
-    <!-- Name Column -->
-    <ng-container matColumnDef="name">
-      <th mat-header-cell *matHeaderCellDef> Name </th>
-      <td mat-cell *matCellDef="let element"> {{element.name}} </td>
-    </ng-container>
-
-    <!-- Weight Column -->
-    <ng-container matColumnDef="weight">
-      <th mat-header-cell *matHeaderCellDef> Weight </th>
-      <td mat-cell *matCellDef="let element"> {{element.weight}} </td>
-    </ng-container>
-
-    <!-- Symbol Column -->
-    <ng-container matColumnDef="symbol">
-      <th mat-header-cell *matHeaderCellDef> Symbol </th>
-      <td mat-cell *matCellDef="let element"> {{element.symbol}} </td>
-    </ng-container>
-
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
-
-  <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+<div class="chart-container">
+  <div><nvd3 [options]="options" [data]="datatval"></nvd3></div>
 </div>
-    </div>
+</div>
      </mat-tab>
-  <mat-tab label="Second"> Content 2 </mat-tab>
-  <mat-tab label="Third"> Content 3 </mat-tab>
+  <mat-tab label="Customer Enquiry"> Content 2 </mat-tab>
+  <mat-tab label="Complaints History"> Content 3 </mat-tab>
 </mat-tab-group>
 
 </section>

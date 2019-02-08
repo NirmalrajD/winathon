@@ -5,6 +5,33 @@ header{
     font-size:20px;
     color:#fff;
 }
+.w100{
+  width:100%;
+}
+.material-table{
+  padding:28px 28px 0px;
+  box-sizing: border-box;
+}
 table {
   width: 100%;
+  background:#fff;
+  margin-bottom:28px;
+   border-right:1px solid #d0d0d0;
+  border-left:1px solid #d0d0d0;
+ -webkit-box-shadow: 0px 2px 10px 1px rgba(0,0,0,0.5);
+-moz-box-shadow: 0px 2px 10px 1px rgba(0,0,0,0.5);
+box-shadow: 0px 2px 10px 1px rgba(0,0,0,0.5);
+  }
+table .table-thead th{
+background:#666;
+font-weight:400;
+text-align:left;
+color:#fff;padding:8px 14px;
+}
+table tbody td{
+  font-size:14px;
+  font-weight:400;
+  padding:8px 14px;
+  color:#75787b;
+  border-bottom:1px solid #d0d0d0;
 }
