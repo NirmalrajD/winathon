@@ -119,8 +119,10 @@ function getEnquiredDetails(searchQuery) {
        var jsonObj = JSON.parse(this.responseText)
        console.log(jsonObj)
        updateEnquiryDetails(jsonObj)
+    } else if (this.readyState == 4 && this.status == 500) {
+      showCallCenterMessage();
     } else {
-      console.log("FAILED");
+      console.log("Failed Here")
     }
   };
   xhttp.open("POST", `http://192.168.27.58/api/GetEnquiryByCustomer?input=${searchQuery.replace(/ /g, "")}`, true);
@@ -169,6 +171,13 @@ function updateNewConnectionDetails(jsonObj) {
   var msg = new SpeechSynthesisUtterance(textMsg);
   window.speechSynthesis.speak(msg);
   sendEmail(jsonObj)
+}
+
+function showCallCenterMessage() {
+  var textMsg = "Sorry for the inconvenience! <br/>Without proper reference or details we cannot fetch the details you looking. Please feel free to contact our customer agent direct line. <br/>1800-123-456";
+  addBotItem(textMsg)
+  var msg = new SpeechSynthesisUtterance(textMsg);
+  window.speechSynthesis.speak(msg);
 }
 
 function updateEnquiryDetails(jsonObj) {
