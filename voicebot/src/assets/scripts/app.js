@@ -70,14 +70,14 @@ function getCustomerType(text) {
 
 function getCustomerTopQuestion(text) {
   if (text.includes("existing")) {
-    return "Share you number or customer id?"
+    return "Share you number or customer id or enquiry reference number?"
   }
 
   if (text.includes("new")) {
     return "Please share your name?"
   }
 
-  return "Invalid option!!! Please share existiing query or new query?";
+  return "Invalid option!!! Please share existing query or new query?";
 }
 
 function sendEmail(jsonObj) {
@@ -128,10 +128,10 @@ function submitConnectionDetails(formData) {
   var postModel = {
     "CustomerName" : formData["NAME"],
     "Location" : formData["LOCATION"],
-    "Zipcode" : formData["ZIPCODE"],
+    "Zipcode" : formData["ZIPCODE"].replace(/ /g, ""),
     "EmailId" : formData["EMAILID"].replace(/ /g, ""),
     "ContactNo" : formData["CONTACTNUMBER"].replace(/ /g, ""),
-    "SecondaryNo" : formData["ALTNUMBER"],
+    "SecondaryNo" : formData["ALTNUMBER"].replace(/ /g, ""),
     "CallType" : formData["CALLTYPE"]
   }
 
@@ -160,8 +160,19 @@ function updateEnquiryDetails(jsonObj) {
     if (jsonObj["status"] == 1) {
       console.log(jsonObj["data"])
       var enquiryDetails = jsonObj["data"]
-      if (enquiryDetails.length == 1) {
-        textMsg = `Your latest enquiry id is ${enquiryDetails[0]['EnquiryNo']}. Currently status is ${enquiryDetails[0]['Status']}`
+      if (enquiryDetails != null ) {
+        if (enquiryDetails.length == 1) {
+          textMsg = `Hi ${jsonObj["msg"]}, Your latest enquiry id is ${enquiryDetails[0]['EnquiryNo']}. Currently status is ${enquiryDetails[0]['Status']}`
+        } else if (enquiryDetails.length > 1) {
+          textMsg = `Hi ${jsonObj["msg"]}, You have multiple enquiries are available. <br/>`;
+          for (var element in enquiryDetails) {
+            textMsg += `Enquiry Id:  ${enquiryDetails[element]['EnquiryNo']} - Current status is ${enquiryDetails[element]['Status']} <br/>`
+          }
+        } else {
+            textMsg = "Information not available. Please try again with correct Customer Id or Reference ID or Primary Contact Number."
+        }
+      } else {
+            textMsg = "Information not available. Please try again with correct Customer Id or Reference ID or Primary Contact Number."
       }
     }
   
@@ -237,8 +248,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
   };
   recognition.onresult = function(ev) {
     recognizedText = ev["results"][0][0]["transcript"];
-    console.log(recognizedText)
-    addUserItem(recognizedText);
+    addUserItem(recognizedText.replace(/ /g, ""));
     //ga('send', 'event', 'Message', 'add', 'user');
 
     if (customerTypeKnown == false) {
