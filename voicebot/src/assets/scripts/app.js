@@ -102,7 +102,7 @@ function submitConnectionDetails(formData) {
       console.log(this.responseText)
        var jsonObj = JSON.parse(this.responseText)
        console.log(jsonObj)
-       //updateEnquiryDetails(jsonObj)
+       updateNewConnectionDetails(jsonObj)
     } else {
       console.log("FAILED");
     }
@@ -125,6 +125,17 @@ function submitConnectionDetails(formData) {
   xhttp.send(jsonStr);
 }
 
+function updateNewConnectionDetails(jsonObj) {
+  var textMsg = "Invalid search!!! Please try again...";
+  if (jsonObj["status"] == 1) {
+    console.log(jsonObj["data"])
+    var enquiryDetails = jsonObj["data"]
+    textMsg = `Your enquiry has been successfully registered with reference number ${enquiryDetails['Enquiry']['EnquiryNo']}. Please use this number for future reference with respect to this issue,`;
+  }
+  addBotItem(textMsg)
+  var msg = new SpeechSynthesisUtterance(textMsg);
+  window.speechSynthesis.speak(msg);
+}
 
 function updateEnquiryDetails(jsonObj) {
     var textMsg = "Invalid search!!! Please try again...";
@@ -213,14 +224,12 @@ document.addEventListener("DOMContentLoaded", function(event) {
     ga('send', 'event', 'Message', 'add', 'user');
 
     if (customerTypeKnown == false) {
-      console.log("FIRST TIME")
       selectedType = getCustomerType(recognizedText)
       if (selectedType > 0) {
         customerTypeKnown = true
       }
       handleTopMessages(recognizedText)
     } else {
-      console.log("SECOND SETS")
       var textMsg = "";
       if (selectedType == 1) {
         //textMsg = "Please wait while checking...";
@@ -228,11 +237,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
         return false
       } else if(selectedType == 2) {
         newData[newConnection[currentStepID]] = recognizedText
-        console.log(newData);
         currentStepID++;
         if (currentStepID < newConnection.length) {
-          console.log(currentStepID)
-          console.log(newConnection[currentStepID]);
           textMsg = newMessages[newConnection[currentStepID]];
         } else {
           textMsg = "API will be called to submit the details"; 
