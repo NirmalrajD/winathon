@@ -8,6 +8,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatButtonModule, MatCheckboxModule, MatPaginatorModule, MatTableModule } from '@angular/material';
 import { MatTabsModule } from '@angular/material/tabs';
 import { VoicebotComponent } from './voicebot/voicebot.component';
+import { NvD3Module } from 'ngx-nvd3';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,7 @@ import { VoicebotComponent } from './voicebot/voicebot.component';
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule,
+    AppRoutingModule, NvD3Module,
 BrowserAnimationsModule, MatPaginatorModule, MatTableModule,
 MatButtonModule, MatCheckboxModule, MatTabsModule, HttpClientModule
     
