@@ -5,7 +5,7 @@ import { VoicebotComponent } from './voicebot/voicebot.component';
 
 const routes: Routes = [
   { path: '', component: VoicebotComponent},
-  { path: '/Admin', component: AdminpanelComponent },
+  { path: 'Admin', component: AdminpanelComponent },
 ];
 
 @NgModule({
