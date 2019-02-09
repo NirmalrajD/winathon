@@ -62,57 +62,7 @@ export class AdminpanelComponent implements OnInit {
     });
   }
   ticketschart(){
-    this.chart = new Chart({
-      chart: {
-        
-      type: 'pie'
-      },
-      title: {
-        text: 'Tickets Details'
-      },
-      credits: {
-        enabled: false
-      },
-      colors:['#ec8190','#7fabd8','#b4e47f'],
-      series: [
-        {
-          name: 'Line 1',
-          data: [
-            { name: 'Open tickets', y: 61.41 },
-            { name: 'Submit Tickets', y: 11.84 },
-            { name: 'Resolved Tickets', y: 50.85 }
-           
-        ]
-         
-        }
-      ]
-    });
    
-    /**chartData */
-    this.chartData = new Chart({
-      chart: {
-        type: 'pie'
-      },
-      title: {
-        text: 'Tickets Details'
-      },
-      credits: {
-        enabled: false
-      },
-      colors:['#b54b53','#d0d0d0','#ecac4c'],
-      series: [
-        {
-          name: 'Line 1',
-          data: [
-            { name: 'Open tickets', y: 36},
-            { name: 'Submit Tickets', y:47 },
-            { name: 'Resolved Tickets', y: 50 }
-           
-        ]
-         
-        }
-      ]
-    });
    
  
   }

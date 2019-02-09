@@ -28,3 +28,10 @@
   ::-webkit-scrollbar-thumb:hover {
     background: #555; 
   }
+
+  .chart-ticketsimage{
+    height:500px;
+    background:url('Assets/images/ticketschart.PNG') center center no-repeat !important;
+    background-size:contain !important;
+    
+  }
